@@ -20,7 +20,10 @@ public class PlayState extends State {
     private static final int GROUND_Y_OFFSET = -50;
     SpriteBatch batch;
     BitmapFont font;
+    BitmapFont txt;
     int c=0;
+    static int score;
+    String sc="Score ";
     private Bird bird;
     private Texture bg;
     private Texture ground;
@@ -36,7 +39,8 @@ public class PlayState extends State {
         bg = new Texture("bg.png");
         ground = new Texture("ground.png");
         font=new BitmapFont();
-        font.getData().setScale(2);
+        txt=new BitmapFont();
+        font.getData().setScale(1);
         font.setColor(Color.WHITE);
         groundPos1 = new Vector2(cam.position.x - cam.viewportWidth / 2, GROUND_Y_OFFSET);
         groundPos2 = new Vector2((cam.position.x - cam.viewportWidth / 2) + ground.getWidth(), GROUND_Y_OFFSET);
@@ -60,6 +64,7 @@ public class PlayState extends State {
 
     @Override
     public void update(float dt) {
+        score = c;
         handleInput();
         updateGround();
         bird.update(dt);
@@ -72,13 +77,18 @@ public class PlayState extends State {
                 tube.reposition(tube.getPosTopTube().x  + ((Tube.TUBE_WIDTH + TUBE_SPACING) * TUBE_COUNT));
             }
 
-            if(tube.collides(bird.getBounds()))
+            if(tube.collides(bird.getBounds())) {
+
                 gsm.set(new over(gsm));
+            }
         }
 
-        if(bird.getPosition().y <= ground.getHeight() + GROUND_Y_OFFSET)
+        if(bird.getPosition().y <= ground.getHeight() + GROUND_Y_OFFSET) {
+
             gsm.set(new over(gsm));
+        }
         cam.update();
+
 
     }
 
@@ -101,8 +111,9 @@ public class PlayState extends State {
 
         sb.draw(ground, groundPos1.x, groundPos1.y);
         sb.draw(ground, groundPos2.x, groundPos2.y);
-        font.draw(sb,String.valueOf(c),cam.position.x - (cam.viewportWidth / 2)+10, 30);
-
+        txt.draw(sb,sc,cam.position.x - (cam.viewportWidth / 2)+10, 30);
+        font.draw(sb,String.valueOf(c),cam.position.x - (cam.viewportWidth / 2)+60, 30);
+        score=c;
         sb.end();
 
     }
