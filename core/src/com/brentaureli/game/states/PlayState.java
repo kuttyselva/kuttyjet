@@ -1,7 +1,9 @@
 package com.brentaureli.game.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -16,7 +18,9 @@ public class PlayState extends State {
     private static final int TUBE_SPACING = 125;
     private static final int TUBE_COUNT = 4;
     private static final int GROUND_Y_OFFSET = -50;
-
+    SpriteBatch batch;
+    BitmapFont font;
+    int c=0;
     private Bird bird;
     private Texture bg;
     private Texture ground;
@@ -26,10 +30,14 @@ public class PlayState extends State {
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
+        batch=new SpriteBatch();
         bird = new Bird(50, 300);
         cam.setToOrtho(false, FlappyDemo.WIDTH / 2, FlappyDemo.HEIGHT / 2);
         bg = new Texture("bg.png");
         ground = new Texture("ground.png");
+        font=new BitmapFont();
+        font.getData().setScale(2);
+        font.setColor(Color.WHITE);
         groundPos1 = new Vector2(cam.position.x - cam.viewportWidth / 2, GROUND_Y_OFFSET);
         groundPos2 = new Vector2((cam.position.x - cam.viewportWidth / 2) + ground.getWidth(), GROUND_Y_OFFSET);
 
@@ -44,8 +52,10 @@ public class PlayState extends State {
 
     @Override
     protected void handleInput() {
-        if(Gdx.input.justTouched())
+        if(Gdx.input.justTouched()) {
             bird.jump();
+            c++;
+        }
     }
 
     @Override
@@ -63,21 +73,27 @@ public class PlayState extends State {
             }
 
             if(tube.collides(bird.getBounds()))
-                gsm.set(new MenuState(gsm));
+                gsm.set(new over(gsm));
         }
 
         if(bird.getPosition().y <= ground.getHeight() + GROUND_Y_OFFSET)
-            gsm.set(new MenuState(gsm));
+            gsm.set(new over(gsm));
         cam.update();
 
     }
 
     @Override
     public void render(SpriteBatch sb) {
+
         sb.setProjectionMatrix(cam.combined);
+
         sb.begin();
+
+
         sb.draw(bg, cam.position.x - (cam.viewportWidth / 2), 0);
+
         sb.draw(bird.getTexture(), bird.getPosition().x, bird.getPosition().y);
+
         for(Tube tube : tubes) {
             sb.draw(tube.getTopTube(), tube.getPosTopTube().x, tube.getPosTopTube().y);
             sb.draw(tube.getBottomTube(), tube.getPosBotTube().x, tube.getPosBotTube().y);
@@ -85,7 +101,10 @@ public class PlayState extends State {
 
         sb.draw(ground, groundPos1.x, groundPos1.y);
         sb.draw(ground, groundPos2.x, groundPos2.y);
+        font.draw(sb,String.valueOf(c),cam.position.x - (cam.viewportWidth / 2)+10, 30);
+
         sb.end();
+
     }
 
     @Override

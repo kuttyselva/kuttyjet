@@ -16,6 +16,7 @@ public class PlayState extends State {
     private static final int GROUND_Y_OFFSET = -30;
     private static final int TUBE_SPACING = 125;
     private static final int TUBE_COUNT = 4;
+    int c=0;
 
     private Bird bird;
     private Texture background;
@@ -49,6 +50,7 @@ public class PlayState extends State {
                 gsm.set(new PlayState(gsm));
             else
                 bird.jump();
+            c++;
         }
     }
 
