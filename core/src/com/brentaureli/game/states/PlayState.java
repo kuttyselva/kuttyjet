@@ -59,6 +59,22 @@ public class PlayState extends State {
         if(Gdx.input.justTouched()) {
             bird.jump();
             c++;
+            if(c>30)
+            {
+                bg=new Texture("dbg.png");
+            }
+            if(c>60)
+            {
+                bg=new Texture("bbg.png");
+            }
+            if(c>100)
+            {
+                bg=new Texture("abg.png");
+            }
+            if(c>150)
+            {
+                bg=new Texture("cbg.png");
+            }
         }
     }
 
